@@ -1,0 +1,5 @@
+if not fs.exists("updater") then
+  shell.run("wget https://katiska.cc/temp/minecraft/dashboard/updater")
+end
+
+shell.run("updater dashboard")

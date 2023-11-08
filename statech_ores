@@ -1,0 +1,62 @@
+{
+  -- bronze drill
+  "iron_ore",
+  "coal_ore",
+  "lignite_coal_ore",
+  "copper_ore",
+  "tin_ore",
+  "gold_ore",
+  "lead_ore",
+  "redstone_ore",
+  "silver_ore",
+  "galena_ore",
+
+  -- steel drill
+  "antimony_ore",
+  "fluorite_ore",
+  "diamond_ore",
+  "lapis_ore",
+  "nickel_ore",
+  "bauxite_ore",
+  "salt_ore",
+  "emerald_ore",
+  "quartz_ore",
+  "ruby_ore",
+  "sapphire_ore",
+
+  -- stainless steel drill
+  "titanium_ore",
+  "tungsten_ore",
+  "mozanite_ore",
+  "platinum_ore",
+  "sheldonite_ore",
+  "peridot_ore",
+  "sodalite_ore",
+
+  -- gold drill
+  "netherrack",
+  "blackstone",
+  "basalt",
+  "soul_soil",
+  "magma_block",
+  "soul_sand",
+
+  "ancient_debris",
+  "glowstone",
+  "nether_quartz_ore",
+  "nether_gold_ore",
+
+  "emeraldite_ore",
+  "pendorite_ore",
+
+  "anthracite_ore",
+  "cinnabar_ore",
+  "pyrite_ore",
+
+  "sphalerite_ore",
+
+  -- titanium drill
+  "uranium_ore",
+  "iridium_ore"
+}
+

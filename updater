@@ -1,0 +1,88 @@
+-- [[ CONFIG ]] --
+
+local scripts = "https://katiska.cc/temp/minecraft"
+local project = arg[1]
+
+-- [ DOWNLOAD ] --
+
+download = function(file, name)
+  local data = http.get(scripts .. "/" .. project .. "/" .. file)
+  if data then
+    print(string.format("  [download] %s :: OK", file))
+    local file = fs.open(name, "w")
+    file.write(data.readAll())
+    file.close()
+    return true
+  else
+    print(string.format("  [download] %s :: FAIL", file))
+  end
+end
+
+-- [ SAVE/LOAD ] --
+
+loadTable = function(name)
+  local file = fs.open(name, "r")
+  local data = file.readAll()
+  file.close()
+  return textutils.unserialize(data)
+end
+
+saveTable = function(table, name)
+  local file = fs.open(name, "w")
+  file.write(textutils.serialize(table))
+  file.close()
+end
+
+updateFiles = function()
+  term.clear()
+  term.setCursorPos(1, 1)
+  print("Checking for Updates")
+  print("--------------------")
+
+  if fs.exists("config") then
+    files = loadTable("config")
+    for _, v in pairs(files) do
+      v["keep"] = false
+    end
+  else
+    print("No config file was found.")
+    files = {}
+  end
+
+  if download("config", "new") then
+    new = loadTable("new")
+    for k, v in pairs(new) do
+      if not files[k] then
+        files[k] = v
+      end
+      files[k]["keep"] = true
+      path = new[k]["path"] or k
+      if not fs.exists(path) or new[k]["version"] < 1 or new[k]["version"] > files[k]["version"] then
+        print(string.format("* %s :: updating", k))
+        download(k, path)
+      else
+        print(string.format("* %s :: up to date", k))
+      end
+    end
+    if fs.exists("config") then
+      fs.delete("config")
+    end
+    fs.move("new", "config")
+  end
+
+  for k, v in pairs(files) do
+    if not v["keep"] then
+      print(string.format("* %s :: removed", k))
+      fs.delete(k)
+    end
+  end
+  print("--------------------")
+  print("All files updated\n")
+end
+
+updateFiles()
+
+if fs.exists(project) then
+  print("[RUN] " .. project)
+  shell.run(project)
+end

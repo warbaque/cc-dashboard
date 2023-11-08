@@ -1,0 +1,110 @@
+print("starting...")
+
+loadTable = function(name)
+  local file = fs.open(name, "r")
+  local data = file.readAll()
+  file.close()
+  return textutils.unserialize(data)
+end
+
+monitor_init = function()
+  monitor.setTextScale(0.5)
+  monitor.setTextColor(colors.white)
+  monitor.setBackgroundColor(colors.black)
+  monitor.clear()
+
+  width, height = monitor.getSize()
+  columns = math.max(math.floor(width / 36), 1)
+  width = math.floor(width / columns)
+
+  bg = {
+    string.rep("7", width-2),
+    string.rep("f", width-2),
+  }
+  fmt = "%-" .. width-2-21 .. "s %10s %9s"
+end
+
+error = function(msg)
+  print(msg)
+  monitor.setTextScale(0.5)
+  monitor.setTextColor(colors.white)
+  monitor.setBackgroundColor(colors.red)
+  monitor.setCursorPos(2, math.floor(height/2))
+  monitor.clear()
+  monitor.write("ERROR")
+end
+
+-- [[ INIT ]] --
+
+storage = peripheral.find("item_storage")
+monitor = peripheral.find("monitor")
+
+order = loadTable("dashboard_item_order")
+items = {}
+avg = {}
+N = 1200
+
+monitor_init()
+
+----------------
+
+update = function()
+  local counts = {}
+  for _, item in ipairs(order) do
+    counts[item] = 0
+  end
+  for k, v in pairs(storage.items()) do
+    item = string.gsub(v.name, "%S+:", "")
+    if counts[item] then
+      counts[item] = counts[item] + v.count
+    else
+      table.insert(order, item)
+      counts[item] = v.count
+      print("added " .. item)
+    end
+  end
+  for item, count in pairs(counts) do
+    avg[item] = (avg[item] or 0) * (N-1)/N + (items[item] and count - items[item] or 0) / N
+  end
+  items = counts
+end
+
+render = function()
+  if width < 36 then
+    error(string.format("Monitor width too small: %s < 36", width))
+    return
+  end
+  monitor.setCursorPos(2, 1)
+  monitor.write(string.format(fmt, "ITEM", "COUNT", "i/min "))
+  for row, item in ipairs(order) do
+    -- print(string.sub(item, 0, width-2-21))
+    -- print(items[item])
+    -- print(string.format(20 * avg[item]))
+    monitor.setCursorPos(2+width*math.floor((row-1)/(height-2)), 3+(row-1)%(height-2))
+    monitor.blit(
+      string.format(fmt,
+        string.sub(item, 0, width-2-21),
+        items[item],
+        string.format("%s [%5.1f]", avg[item] >= 0 and '+' or '-', math.min(math.abs(1200 * avg[item]), 999.9))
+      ),
+      string.rep("0", width-2-9) .. (avg[item] >= 0 and 'd' or 'e') .. "00" .. string.rep(avg[item] >= 0 and "3" or "6", 5) .. "0",
+      bg[1 + (row+1)%2]
+    )
+  end
+end
+
+monitor_resize = function()
+  while true do
+    local event, _ = os.pullEvent("monitor_resize")
+    monitor_init()
+  end
+end
+
+main = function()
+  while true do
+    update()
+    render()
+  end
+end
+
+parallel.waitForAll(main, monitor_resize)

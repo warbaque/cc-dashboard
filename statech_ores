@@ -1,5 +1,6 @@
 {
-  -- bronze drill
+  "SEPARATOR: [ BRONZE ]",
+
   "iron_ore",
   "coal_ore",
   "lignite_coal_ore",
@@ -10,8 +11,12 @@
   "redstone_ore",
   "silver_ore",
   "galena_ore",
+  "",
 
-  -- steel drill
+  --
+
+  "SEPARATOR: [ STEEL ]",
+
   "antimony_ore",
   "fluorite_ore",
   "diamond_ore",
@@ -23,8 +28,12 @@
   "quartz_ore",
   "ruby_ore",
   "sapphire_ore",
+  "",
 
-  -- stainless steel drill
+  --
+
+  "SEPARATOR: [ STAINLESS STEEL ]",
+
   "titanium_ore",
   "tungsten_ore",
   "mozanite_ore",
@@ -32,14 +41,21 @@
   "sheldonite_ore",
   "peridot_ore",
   "sodalite_ore",
+  "",
+  "",
+  "",
 
-  -- gold drill
-  "netherrack",
-  "blackstone",
-  "basalt",
-  "soul_soil",
-  "magma_block",
-  "soul_sand",
+  --
+
+  "SEPARATOR: [ TITANIUM ]",
+
+  "uranium_ore",
+  "iridium_ore",
+  "",
+
+  --
+
+  "SEPARATOR: [ GOLD ]",
 
   "ancient_debris",
   "glowstone",
@@ -49,14 +65,17 @@
   "emeraldite_ore",
   "pendorite_ore",
 
-  "anthracite_ore",
   "cinnabar_ore",
   "pyrite_ore",
 
   "sphalerite_ore",
 
-  -- titanium drill
-  "uranium_ore",
-  "iridium_ore"
+  "netherrack",
+  "blackstone",
+  "basalt",
+  "soul_soil",
+  "magma_block",
+  "soul_sand",
+  "anthracite_ore"
 }
 

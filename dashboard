@@ -1,5 +1,3 @@
-print("starting...")
-
 loadTable = function(name)
   local file = fs.open(name, "r")
   local data = file.readAll()
@@ -48,6 +46,12 @@ monitor_init()
 
 ----------------
 
+remove_prefix = function(s, start)
+   if string.sub(s, 1, string.len(start)) == start then
+      return string.sub(s, string.len(start) +1, -1)
+   end
+end
+
 update = function()
   local counts = {}
   for _, item in ipairs(order) do
@@ -75,21 +79,31 @@ render = function()
     return
   end
   monitor.setCursorPos(2, 1)
+  monitor.setTextColor(colors.magenta)
   monitor.write(string.format(fmt, "ITEM", "COUNT", "i/min "))
   for row, item in ipairs(order) do
     -- print(string.sub(item, 0, width-2-21))
     -- print(items[item])
     -- print(string.format(20 * avg[item]))
     monitor.setCursorPos(2+width*math.floor((row-1)/(height-2)), 3+(row-1)%(height-2))
-    monitor.blit(
-      string.format(fmt,
-        string.sub(item, 0, width-2-21),
-        items[item],
-        string.format("%s [%5.1f]", avg[item] >= 0 and '+' or '-', math.min(math.abs(1200 * avg[item]), 999.9))
-      ),
-      string.rep("0", width-2-9) .. (avg[item] >= 0 and 'd' or 'e') .. "00" .. string.rep(avg[item] >= 0 and "3" or "6", 5) .. "0",
-      bg[1 + (row+1)%2]
-    )
+
+    separator = remove_prefix(item, "SEPARATOR: ")
+    if item == "" then
+      monitor.write("")
+    elseif separator then
+      monitor.setTextColor(colors.orange)
+      monitor.write(separator)
+    else
+      monitor.blit(
+        string.format(fmt,
+          string.sub(item, 0, width-2-21),
+          items[item],
+          string.format("%s [%5.1f]", avg[item] >= 0 and '+' or '-', math.min(math.abs(1200 * avg[item]), 999.9))
+        ),
+        string.rep("0", width-2-9) .. (avg[item] >= 0 and 'd' or 'e') .. "00" .. string.rep(avg[item] >= 0 and "3" or "6", 5) .. "0",
+        bg[1 + (row+1)%2]
+      )
+    end
   end
 end
 
@@ -101,6 +115,7 @@ monitor_resize = function()
 end
 
 main = function()
+  print("running...")
   while true do
     update()
     render()

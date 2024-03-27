@@ -1,6 +1,9 @@
 {
-	["dashboard"]={["version"]=1.3,},
+	["dashboard"]={["version"]=2,},
 	["startup"]={["version"]=1,},
 	["updater"]={["version"]=1,},
-	["statech_ores"]={["version"]=1.3,["path"]="dashboard_items"},
+	["presets/statech_ores"]={
+		["version"]=2,
+		["path"]="dashboard_items",
+	},
 }

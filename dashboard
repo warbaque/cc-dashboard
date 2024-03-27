@@ -32,10 +32,19 @@ error = function(msg)
   monitor.write("ERROR")
 end
 
--- [[ INIT ]] --
+----------------
 
-storage = peripheral.find("item_storage")
-monitor = peripheral.find("monitor")
+storages = {}
+monitor = nil
+
+peripherals_init = function()
+  storages = { peripheral.find("item_storage") }
+  print("[info] found", #storages, "storages")
+  monitor = peripheral.find("monitor")
+  if monitor then
+    monitor_init()
+  end
+end
 
 dashboard_items = loadTable("dashboard_items")
 dynamic_items ={}
@@ -43,14 +52,14 @@ items = {}
 avg = {}
 N = 1200
 
-monitor_init()
+peripherals_init()
 
-----------------
+-- [[ INIT ]] --
 
 remove_prefix = function(s, start)
-   if string.sub(s, 1, string.len(start)) == start then
-      return string.sub(s, string.len(start) +1, -1)
-   end
+  if string.sub(s, 1, string.len(start)) == start then
+    return string.sub(s, string.len(start) +1, -1)
+  end
 end
 
 update = function()
@@ -62,12 +71,14 @@ update = function()
   end
 
   dynamic_items = {}
-  for k, v in pairs(storage.items()) do
-    item = string.gsub(v.name, "%S+:", "")
-    if not counts[item] and dashboard_items.dynamic_items then
-      table.insert(dynamic_items, item)
+  for _, storage in ipairs(storages) do
+    for k, v in pairs(storage.items()) do
+      item = string.gsub(v.name, "%S+:", "")
+      if not counts[item] and dashboard_items.dynamic_items then
+        table.insert(dynamic_items, item)
+      end
+      counts[item] = (counts[item] or 0) + v.count
     end
-    counts[item] = v.count
   end
   for item, count in pairs(counts) do
     avg[item] = (avg[item] or 0) * (N-1)/N + (items[item] and count - items[item] or 0) / N
@@ -132,19 +143,25 @@ render = function()
   end
 end
 
-monitor_resize = function()
+events = function()
   while true do
-    local event, _ = os.pullEvent("monitor_resize")
-    monitor_init()
+    local event, _ = os.pullEvent()
+    if event == "peripheral" or event == "peripheral_detach" then
+      peripherals_init()
+    elseif event == "monitor_resize" then
+      monitor_init()
+    end
   end
 end
 
 main = function()
-  print("running...")
   while true do
     update()
-    render()
+    if monitor then
+      render()
+    end
+    sleep(0)
   end
 end
 
-parallel.waitForAll(main, monitor_resize)
+parallel.waitForAll(main, events)

@@ -38,7 +38,16 @@ storages = {}
 monitor = nil
 
 peripherals_init = function()
-  storages = { peripheral.find("item_storage") }
+  storages = {}
+  item_getters = function(ty, fn)
+    for _, storage in ipairs({ peripheral.find(ty) }) do
+      table.insert(storages, { items=storage[fn] })
+    end
+  end
+
+  item_getters("inventory", "list")
+  item_getters("item_storage", "items")
+
   print("[info] found", #storages, "storages")
   monitor = peripheral.find("monitor")
   if monitor then
@@ -72,7 +81,7 @@ update = function()
 
   dynamic_items = {}
   for _, storage in ipairs(storages) do
-    for k, v in pairs(storage.items()) do
+    for k, v in pairs(storage.items() or {}) do
       item = string.gsub(v.name, "%S+:", "")
       if not counts[item] and dashboard_items.dynamic_items then
         table.insert(dynamic_items, item)

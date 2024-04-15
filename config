@@ -1,5 +1,5 @@
 {
-	["dashboard"]={["version"]=2,},
+	["dashboard"]={["version"]=3,},
 	["startup"]={["version"]=1,},
 	["updater"]={["version"]=1,},
 	["presets/statech_ores"]={

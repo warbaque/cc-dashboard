@@ -59,7 +59,8 @@ dashboard_items = loadTable("dashboard_items")
 dynamic_items ={}
 items = {}
 avg = {}
-N = 1200
+N = 600 -- samples
+T = 600 -- 1 minute
 
 peripherals_init()
 
@@ -112,7 +113,7 @@ writeItems = function(row, list)
       string.format(fmt,
         string.sub(item, 0, width-2-21),
         items[item],
-        string.format("%s [%5.1f]", avg[item] >= 0 and '+' or '-', math.min(math.abs(1200 * avg[item]), 999.9))
+        string.format("%s [%5.0f]", avg[item] >= 0 and '+' or '-', math.min(math.abs(T * avg[item]), 99999))
       ),
       string.rep("0", width-2-9) .. (avg[item] >= 0 and 'd' or 'e') .. "00" .. string.rep(avg[item] >= 0 and "3" or "6", 5) .. "0",
       bg[1 + (row+i+1)%2]

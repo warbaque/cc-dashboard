@@ -3,7 +3,7 @@
 	["startup"]={["version"]=1,},
 	["updater"]={["version"]=1,},
 	["presets/statech_ores"]={
-		["version"]=2,
+		["version"]=3,
 		["path"]="dashboard_items",
 	},
 }

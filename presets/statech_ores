@@ -74,5 +74,16 @@
       -- "anthracite_ore"
     }
   },
+  {
+    name="[ SPACE ]",
+    items={
+      "moon_desh_ore",
+      "mars_ostrum_ore",
+      "venus_calorite_ore",
+      "deepslate_ice_shard_ore",
+      "moon_cheese_ore",
+      "moon_sand"
+    }
+  },
   dynamic_items=true
 }

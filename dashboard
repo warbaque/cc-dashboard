@@ -47,8 +47,8 @@ peripherals_init = function()
 
   item_getters("inventory", "list")
   item_getters("item_storage", "items")
-
   print("[info] found", #storages, "storages")
+
   monitor = peripheral.find("monitor")
   if monitor then
     monitor_init()
@@ -59,8 +59,8 @@ dashboard_items = loadTable("dashboard_items")
 dynamic_items ={}
 items = {}
 avg = {}
-N = 600 -- samples
-T = 600 -- 1 minute
+N = 1200 -- samples
+T = 1200 -- 1 minute
 
 peripherals_init()
 
@@ -170,7 +170,9 @@ main = function()
     if monitor then
       render()
     end
-    sleep(0)
+    if #storages == 0 then
+      sleep(0)
+    end
   end
 end
 

@@ -136,18 +136,28 @@ render = function()
   row = 1
   for _, list in ipairs(dashboard_items) do
     empty_rows = (height-2 - (row-1)%(height-2))
-    if (empty_rows < 2) or (#list.items+1 < height-2) and (#list.items+1 > empty_rows) then
-      row = row + empty_rows
+
+    skip_render = true
+    for _, item in ipairs(list.items) do
+      if items[item] > 0 then
+        skip_render = false
+      end
     end
 
-    writeSeparator(row, list.name)
-    writeItems(row, list.items)
-    row = row + #list.items + 2
+    if not skip_render then
+      if (empty_rows < 2) or (#list.items+1 < height-2) and (#list.items+1 > empty_rows) then
+        row = row + empty_rows
+      end
+
+      writeSeparator(row, list.name)
+      writeItems(row, list.items)
+      row = row + #list.items + 2
+    end
   end
 
   if #dynamic_items > 0 then
-    if #dashboard_items > 0 and dashboard_items.dynamic_items then
-      writeSeparator(row, "extra items")
+    if row > 1 and dashboard_items.dynamic_items then
+      writeSeparator(row, "[ extra items ]")
     end
     writeItems(row, dynamic_items)
   end

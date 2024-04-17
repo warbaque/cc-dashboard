@@ -32,6 +32,14 @@ error = function(msg)
   monitor.write("ERROR")
 end
 
+Clock = { t0 = os.clock() }
+function Clock:ticks()
+  local t1 = os.clock()
+  local dt = math.max(t1 - self.t0, 0.05)
+  self.t0 = t1
+  return math.floor(dt/0.05+0.5)
+end
+
 ----------------
 
 storages = {}
@@ -59,8 +67,8 @@ dashboard_items = loadTable("dashboard_items")
 dynamic_items ={}
 items = {}
 avg = {}
-N = 1200 -- samples
-T = 1200 -- 1 minute
+N = 1200 -- sample window in ticks (1 minute)
+T = 1200 -- display time period in ticks (1 minute)
 
 peripherals_init()
 
@@ -90,8 +98,11 @@ update = function()
       counts[item] = (counts[item] or 0) + v.count
     end
   end
+
+  local ticks = Clock:ticks()
+  local n = N/ticks
   for item, count in pairs(counts) do
-    avg[item] = (avg[item] or 0) * (N-1)/N + (items[item] and count - items[item] or 0) / N
+    avg[item] = (avg[item] or 0) * (n-ticks)/n + (items[item] and count - items[item] or 0) / n
   end
   items = counts
 end

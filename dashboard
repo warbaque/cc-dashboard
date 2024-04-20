@@ -91,11 +91,11 @@ update = function()
   dynamic_items = {}
   for _, storage in ipairs(storages) do
     for k, v in pairs(storage.items() or {}) do
-      item = string.gsub(v.name, "%S+:", "")
+      item = string.gsub(v.name or "---", "%S+:", "")
       if not counts[item] and dashboard_items.dynamic_items then
         table.insert(dynamic_items, item)
       end
-      counts[item] = (counts[item] or 0) + v.count
+      counts[item] = (counts[item] or 0) + (v.count or 0)
     end
   end
 
